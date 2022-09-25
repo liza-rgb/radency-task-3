@@ -1,4 +1,5 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
+import { ExpressError } from "../routes/ExpressError";
 import { NotesData } from "../helpers/notesSeeds"; 
 import { Note, NoteFormatted, CategoryStats } from "./interfaces";
 import { formatNote } from "../helpers/formatNote";
@@ -14,13 +15,13 @@ export const getNotes = (req: Request, res: Response) => {
     res.send(displayNotes);
 }
 
-export const getNoteById = (req: Request, res: Response) => {
+export const getNoteById = (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
     const noteIndex = notes.findIndex((note) => note.id === id);
     if (noteIndex > -1) {
         res.send(formatNote(notes[noteIndex]));
     } else {
-        res.send("404");
+        next(new ExpressError(`The Note ID=${id} is Not Found`, 404));
     }
 }
 
@@ -47,7 +48,7 @@ export const addNote = (req: Request, res: Response) => {
     res.send(`SUCCESSFULLY ADDED NOTE = ${JSON.stringify(newNote)}`);
 }
 
-export const deleteNoteById = (req: Request, res: Response) => {
+export const deleteNoteById = (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
     const deleteNoteIndex = notes.findIndex((note) => note.id === id);
     if (deleteNoteIndex > -1) {
@@ -57,11 +58,11 @@ export const deleteNoteById = (req: Request, res: Response) => {
         ]
         res.send(`SUCCESSFULLY DELETED NOTE WITH ID=${id}`);
     } else {
-        res.send("404");
+        next(new ExpressError(`The Note ID=${id} is Not Valid`, 400));
     }
 }
 
-export const editNoteById = (req: Request, res: Response) => {
+export const editNoteById = (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
     const editNoteIndex = notes.findIndex((note) => note.id === id);
     if (editNoteIndex > -1) {
@@ -75,5 +76,7 @@ export const editNoteById = (req: Request, res: Response) => {
             ...notes.slice(editNoteIndex + 1)
         ]
         res.send(`SUCCESSFULLY UPDATED NOTE WITH ID=${id}`);
+    } else {
+        next(new ExpressError(`The Note ID=${id} is Not Valid`, 400));
     }
 }
