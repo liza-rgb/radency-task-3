@@ -1,4 +1,4 @@
-import { Note } from "../state/interfaces/notes";
+import { Note } from "../repositories/interfaces";
 
 export const categories = [
     {

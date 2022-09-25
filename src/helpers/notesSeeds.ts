@@ -1,4 +1,4 @@
-import { Note } from "../interfaces";
+import { Note } from "../repositories/interfaces";
 import { v4 as uuidv4 } from "uuid";
 
 export const NotesData: Note[] = [
