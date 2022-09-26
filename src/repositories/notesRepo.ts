@@ -45,7 +45,7 @@ export const addNote = (req: Request, res: Response) => {
         isArchived: false
     }
     notes.push(newNote);
-    res.send(`SUCCESSFULLY ADDED NOTE = ${JSON.stringify(newNote)}`);
+    res.send(`SUCCESSFULLY ADDED NOTE = ${JSON.stringify(formatNote(newNote))}`);
 }
 
 export const deleteNoteById = (req: Request, res: Response, next: NextFunction) => {
