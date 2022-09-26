@@ -19,7 +19,7 @@ notesRouter.route('/')
 notesRouter.get('/stats', validateRequest(emptySchema, emptySchema, emptySchema), getNotesStats);
 
 notesRouter.route('/:id')
-    .get(validateRequest(emptySchema, emptySchema, emptySchema), getNoteById)
+    .get(validateRequest(emptySchema, emptySchema, uuidSchema), getNoteById)
     .delete(validateRequest(emptySchema, emptySchema, uuidSchema), deleteNoteById)
     .patch(validateRequest(editNoteBodySchema, emptySchema, uuidSchema), editNoteById);
 
