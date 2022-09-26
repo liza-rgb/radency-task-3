@@ -1,6 +1,6 @@
-import { Note } from "../repositories/interfaces";
+import { Note, Category, CategoryName } from "../repositories/interfaces";
 
-export const categories = [
+export const categories: Category[] = [
     {
         name: "Task",
         iconClass: "fa-solid fa-list-check"
