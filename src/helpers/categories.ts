@@ -1,4 +1,4 @@
-import { Note, Category, CategoryName } from "../repositories/interfaces";
+import { Note, Category, CategoryName } from "../services/interfaces";
 
 export const categories: Category[] = [
     {

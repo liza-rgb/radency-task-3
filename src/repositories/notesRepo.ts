@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { ExpressError } from "../routes/ExpressError";
+import { ExpressError } from "../helpers/ExpressError";
 import { NotesData } from "../helpers/notesSeeds"; 
-import { Note, NoteFormatted, CategoryStats } from "./interfaces";
+import { Note, NoteFormatted, CategoryStats } from "../services/interfaces";
 import { formatNote } from "../helpers/formatNote";
 import { categories, countNotesByCategory } from "../helpers/categories";
 import { v4 as uuidv4 } from "uuid";

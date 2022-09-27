@@ -1,4 +1,4 @@
-import { Note, NoteFormatted } from "../repositories/interfaces";
+import { Note, NoteFormatted } from "../services/interfaces";
 import { formatDate, getDatesList } from "./dates";
 
 export function formatNote(note: Note) {

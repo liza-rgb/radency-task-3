@@ -8,7 +8,7 @@ import {
     editNoteById
 } from "../repositories/notesRepo";
 import { addNoteBodySchema, editNoteBodySchema, uuidSchema, emptySchema } from "../services/validationSchemas";
-import { validateRequest } from "./middleware";
+import { validateRequest } from "../services/validateRequest";
 
 const notesRouter = express.Router();
 

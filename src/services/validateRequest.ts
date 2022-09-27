@@ -2,8 +2,8 @@ import express, { NextFunction, Request, Response } from 'express';
 import { AddNoteBodySchema,
     EditNoteBodySchema,
     UuidSchema,
-    EmptySchema } from '../services/validationSchemas';
-import { ExpressError } from './ExpressError';
+    EmptySchema } from './validationSchemas';
+import { ExpressError } from '../helpers/ExpressError';
 
 export const validateRequest = 
     (bodySchema: AddNoteBodySchema | EditNoteBodySchema | EmptySchema,
