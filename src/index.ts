@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from "express";
-import { ExpressError } from "./routes/ExpressError";
+import { ExpressError } from "./helpers/ExpressError";
 import notesRouter from "./routes/notesRoutes";
 
 const app = express();
