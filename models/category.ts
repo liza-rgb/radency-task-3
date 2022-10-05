@@ -2,7 +2,7 @@
 
 import { Model } from 'sequelize';
 
-interface CategoryAttributes {
+export interface CategoryAttributes {
   id: number;
   name: string;
 }

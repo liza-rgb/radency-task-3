@@ -3,7 +3,16 @@ import { ExpressError } from "../helpers/ExpressError";
 import { formatNote } from "../helpers/formatNote";
 import { v4 as uuidv4 } from "uuid";
 import db from "../../models";
+import { CategoryAttributes } from "../../models/category";
 
+interface NoteFullInfo {
+    id: string;
+    name: string;
+    content: string;
+    isArchived: boolean;
+    createdAt: Date;
+    Category: CategoryAttributes;
+}
 
 export const getNotes = async (req: Request, res: Response) => {
     const allNotes = await db.Note.findAll({ 
@@ -12,7 +21,7 @@ export const getNotes = async (req: Request, res: Response) => {
             ['createdAt', 'ASC']
         ]
     });
-    const formattedNotes = allNotes.map((note: any) => {
+    const formattedNotes = allNotes.map((note: NoteFullInfo) => {
         return formatNote(note);
     });
     res.send(formattedNotes);
@@ -35,11 +44,11 @@ export const getNoteById = async (req: Request, res: Response, next: NextFunctio
 
 export const getNotesStats = async (req: Request, res: Response) => {
     const categories = await db.Category.findAll();
-    const stats = await Promise.all(categories.map(async (category: any) => {
+    const stats = await Promise.all(categories.map(async (category: CategoryAttributes) => {
         return {
             category: category.name,
-            active: await db.Note.count({ where: {CategoryId: category.id, is_archived: false} }),
-            archived: await db.Note.count({ where: {CategoryId: category.id, is_archived: true} })
+            active: await db.Note.count({ where: {CategoryId: category.id, isArchived: false} }),
+            archived: await db.Note.count({ where: {CategoryId: category.id, isArchived: true} })
         };
     }));
     res.send(stats);
@@ -55,7 +64,7 @@ export const addNote = async (req: Request, res: Response) => {
         content: req.body.content,
         CategoryId: foundCategory.id,
         id: uuidv4(),
-        is_archived: false
+        isArchived: false
     }
     
     await db.Note.create(newNote);
@@ -74,12 +83,12 @@ export const deleteNoteById = async (req: Request, res: Response, next: NextFunc
 
 export const editNoteById = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    const { name, content, category, is_archived } = req.body;
+    const { name, content, category, isArchived } = req.body;
     const editNote = await db.Note.findOne({ where: { id } });
     if (editNote !== null) {
         if (name) { editNote.name = name }
         if (content) { editNote.content = content }
-        if (is_archived) { editNote.is_archived = is_archived }
+        if (isArchived) { editNote.isArchived = isArchived }
 
         if (category) {
             const foundCategory = await db.Category.findOne({ 

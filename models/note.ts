@@ -6,7 +6,7 @@ interface NoteAttributes {
   id: string;
   name: string;
   content: string;
-  is_archived: boolean;
+  isArchived: boolean;
 }
 
 module.exports = (sequelize: any, DataTypes: any) => {
@@ -20,7 +20,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
     id!: string;
     name!: string;
     content!: string;
-    is_archived!: boolean;
+    isArchived!: boolean;
 
     static associate(models: any) {
       // define association here
@@ -42,7 +42,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    is_archived: {
+    isArchived: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false

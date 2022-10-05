@@ -9,6 +9,6 @@ export function formatNote(note: any) {
         category: note.Category.name,
         content: note.content,
         datesList: getDatesList(note.content),
-        isArchived: note.is_archived            
+        isArchived: note.isArchived            
     }
 }
