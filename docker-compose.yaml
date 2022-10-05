@@ -5,6 +5,10 @@ services:
     container_name: notes-app-server
     build: .
     restart: always
+    environment:
+      - POSTGRES_DB=notes
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
     ports:
       - 3000:3000
   db:
@@ -17,6 +21,8 @@ services:
       - POSTGRES_DB=notes
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
+    ports:
+      - 5432:5432
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4

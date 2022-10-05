@@ -1,80 +1,94 @@
 import { NextFunction, Request, Response } from "express";
 import { ExpressError } from "../helpers/ExpressError";
-import { NotesData } from "../helpers/notesSeeds"; 
-import { Note, NoteFormatted, CategoryStats } from "../services/interfaces";
 import { formatNote } from "../helpers/formatNote";
-import { categories, countNotesByCategory } from "../helpers/categories";
 import { v4 as uuidv4 } from "uuid";
+import db from "../../models";
 
-let notes: Note[] = NotesData;
 
-export const getNotes = (req: Request, res: Response) => {
-    const displayNotes: NoteFormatted[] = notes.map((note) => {
+export const getNotes = async (req: Request, res: Response) => {
+    const allNotes = await db.Note.findAll({ 
+        include: db.Category, required: true,
+        order: [
+            ['createdAt', 'ASC']
+        ]
+    });
+    const formattedNotes = allNotes.map((note: any) => {
         return formatNote(note);
     });
-    res.send(displayNotes);
+    res.send(formattedNotes);
 }
 
-export const getNoteById = (req: Request, res: Response, next: NextFunction) => {
+export const getNoteById = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    const noteIndex = notes.findIndex((note) => note.id === id);
-    if (noteIndex > -1) {
-        res.send(formatNote(notes[noteIndex]));
+    const foundNote = await db.Note.findOne({
+        where: { id },
+        include: [{
+          model: db.Category,
+        }]
+    });
+    if (foundNote !== null) {
+        res.send(formatNote(foundNote));
     } else {
         next(new ExpressError(`The Note ID=${id} is Not Found`, 404));
     }
 }
 
-export const getNotesStats = (req: Request, res: Response) => {
-    const stats: CategoryStats[] = categories.map((category) => {
-        let notesCount = countNotesByCategory(category.name, notes);
+export const getNotesStats = async (req: Request, res: Response) => {
+    const categories = await db.Category.findAll();
+    const stats = await Promise.all(categories.map(async (category: any) => {
         return {
             category: category.name,
-            active: notesCount.activeNotes,
-            archived: notesCount.archivedNotes
-        }
-    })
+            active: await db.Note.count({ where: {CategoryId: category.id, is_archived: false} }),
+            archived: await db.Note.count({ where: {CategoryId: category.id, is_archived: true} })
+        };
+    }));
     res.send(stats);
 }
 
-export const addNote = (req: Request, res: Response) => {
+export const addNote = async (req: Request, res: Response) => {
+    const foundCategory = await db.Category.findOne({ 
+        where: { name: req.body.category } 
+    });
+    
     const newNote = {
-        ...req.body,
+        name: req.body.name,
+        content: req.body.content,
+        CategoryId: foundCategory.id,
         id: uuidv4(),
-        created: new Date(),
-        isArchived: false
+        is_archived: false
     }
-    notes.push(newNote);
-    res.send(`SUCCESSFULLY ADDED NOTE = ${JSON.stringify(formatNote(newNote))}`);
+    
+    await db.Note.create(newNote);
+    res.send(`SUCCESSFULLY ADDED NOTE!`);
 }
 
-export const deleteNoteById = (req: Request, res: Response, next: NextFunction) => {
+export const deleteNoteById = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    const deleteNoteIndex = notes.findIndex((note) => note.id === id);
-    if (deleteNoteIndex > -1) {
-        notes = [
-            ...notes.slice(0, deleteNoteIndex),
-            ...notes.slice(deleteNoteIndex + 1)
-        ]
+    const deleteNote = await db.Note.destroy({ where: { id } });
+    if (deleteNote === 1) {
         res.send(`SUCCESSFULLY DELETED NOTE WITH ID=${id}`);
     } else {
         next(new ExpressError(`The Note ID=${id} is Not Valid`, 400));
     }
 }
 
-export const editNoteById = (req: Request, res: Response, next: NextFunction) => {
+export const editNoteById = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    const editNoteIndex = notes.findIndex((note) => note.id === id);
-    if (editNoteIndex > -1) {
-        const editNote = {
-            ...notes[editNoteIndex],
-            ...req.body
+    const { name, content, category, is_archived } = req.body;
+    const editNote = await db.Note.findOne({ where: { id } });
+    if (editNote !== null) {
+        if (name) { editNote.name = name }
+        if (content) { editNote.content = content }
+        if (is_archived) { editNote.is_archived = is_archived }
+
+        if (category) {
+            const foundCategory = await db.Category.findOne({ 
+                where: { name: req.body.category } 
+            });
+            editNote.CategoryId = foundCategory.id;
         }
-        notes = [
-            ...notes.slice(0, editNoteIndex),
-            editNote,
-            ...notes.slice(editNoteIndex + 1)
-        ]
+
+        await editNote.save();
         res.send(`SUCCESSFULLY UPDATED NOTE WITH ID=${id}`);
     } else {
         next(new ExpressError(`The Note ID=${id} is Not Valid`, 400));

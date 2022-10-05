@@ -1,9 +1,10 @@
 import express, { NextFunction, Request, Response } from "express";
 import { ExpressError } from "./helpers/ExpressError";
 import notesRouter from "./routes/notesRoutes";
+import db from "../models";
 
 const app = express();
-const port: number = 3000;
+const port: number = 3001;
 
 app.use(express.json());
 
@@ -27,6 +28,8 @@ app.use((err: ExpressError, req: Request, res: Response, next: NextFunction) => 
     res.status(statusCode).send(err);
 });
 
-app.listen(port, () => {
-    console.log(`Listening on: http://localhost:${port}`);
+db.sequelize.sync().then(() => {
+    app.listen(port, () => {
+        console.log(`Listening on: http://localhost:${port}`);
+    });
 });
