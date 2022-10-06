@@ -4,7 +4,7 @@ import notesRouter from "./routes/notesRoutes";
 import db from "../models";
 
 const app = express();
-const port: number = 3001;
+const port: number = 3000;
 
 app.use(express.json());
 

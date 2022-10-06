@@ -62,9 +62,7 @@ export const addNote = async (req: Request, res: Response) => {
     const newNote = {
         name: req.body.name,
         content: req.body.content,
-        CategoryId: foundCategory.id,
-        id: uuidv4(),
-        isArchived: false
+        CategoryId: foundCategory.id
     }
     
     await db.Note.create(newNote);

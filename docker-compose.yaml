@@ -4,14 +4,17 @@ services:
   server:
     container_name: notes-app-server
     build: .
+    depends_on:
+      - postgres_db
     restart: always
     environment:
+      - PSQL_HOST=postgres_db
       - POSTGRES_DB=notes
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
     ports:
       - 3000:3000
-  db:
+  postgres_db:
     container_name: postgres_db
     image: postgres:latest
     restart: always
