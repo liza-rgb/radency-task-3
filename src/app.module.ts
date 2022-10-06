@@ -15,7 +15,7 @@ import { NotesModule } from './notes/notes.module';
       port: 5432,
       username: process.env.POSTGRES_USER || "root",
       password: process.env.POSTGRES_PASSWORD || "root",
-      database: process.env.POSTGRES_DB,
+      database: process.env.POSTGRES_DB || "notes",
       models: [ Note, Category ],
     }),
     NotesModule

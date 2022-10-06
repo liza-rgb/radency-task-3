@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Param, Delete, Patch } from '@nestjs/common';
 import { AddNoteDto } from './dto/add-note.dto';
-import { UpdateNoteDto } from './dto/update-note.dto';
+import { EditNoteDto } from './dto/edit-note.dto';
 import { NotesService } from './notes.service';
 import { NoteFormatted, Statistics } from './interfaces';
 
@@ -34,7 +34,7 @@ export class NotesController {
     }
 
     @Patch(':id')
-    editNoteById(@Body() updateItemDto: UpdateNoteDto, @Param('id') id) {
-        return this.notesService.editNoteById(updateItemDto, id);
+    editNoteById(@Body() editNoteDto: EditNoteDto, @Param('id') id) {
+        return this.notesService.editNoteById(editNoteDto, id);
     }
 }

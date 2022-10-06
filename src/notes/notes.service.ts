@@ -5,7 +5,7 @@ import { formatNote } from './helpers/formatNote';
 import { NoteFormatted, Statistics } from './interfaces';
 import { AddNoteDto } from './dto/add-note.dto';
 import { v4 as uuidv4 } from 'uuid';
-import { UpdateNoteDto } from './dto/update-note.dto';
+import { EditNoteDto } from './dto/edit-note.dto';
 
 @Injectable()
 export class NotesService {
@@ -70,16 +70,16 @@ export class NotesService {
         return `SUCCESSFULLY ADDED NOTE!`;
     }
 
-    async editNoteById(updateItemDto: UpdateNoteDto, id: string) {
+    async editNoteById(editNoteDto: EditNoteDto, id: string) {
         const editNote: Note = await this.noteModel.findOne({ where: { id } });
         
-        if (updateItemDto.name) { editNote.name = updateItemDto.name }
-        if (updateItemDto.content) { editNote.content = updateItemDto.content }
-        if (updateItemDto.isArchived) { editNote.isArchived = updateItemDto.isArchived }
+        if (editNoteDto.name) { editNote.name = editNoteDto.name }
+        if (editNoteDto.content) { editNote.content = editNoteDto.content }
+        if (editNoteDto.isArchived) { editNote.isArchived = editNoteDto.isArchived }
 
-        if (updateItemDto.category) {
+        if (editNoteDto.category) {
             const foundCategory = await this.categoryModel.findOne({ 
-               where: { name: updateItemDto.category } 
+               where: { name: editNoteDto.category } 
             });
             editNote.CategoryId = foundCategory.id;
         }
