@@ -31,7 +31,7 @@ export class NotesService {
         return formattedNotes;
     }
 
-    async getNoteById(id: string) {
+    async getNoteById(id: string): Promise<NoteFormatted | NestError> {
         const foundNote = this.noteModel.findOne({
             where: { id },
             include: [{
@@ -45,7 +45,7 @@ export class NotesService {
         }
     }
 
-    async deleteNoteById(id: string) {
+    async deleteNoteById(id: string): Promise<string | NestError> {
         const deleteNote = await this.noteModel.destroy({ where: { id } });
         if (deleteNote === 1) {
             return `SUCCESSFULLY DELETED NOTE WITH ID=${id}`;
@@ -66,7 +66,7 @@ export class NotesService {
         return stats;
     }
 
-    async addNote(addNoteDto: AddNoteDto) {
+    async addNote(addNoteDto: AddNoteDto): Promise<string | NestError> {
         const foundCategory = await this.categoryModel.findOne({ 
             where: { name: addNoteDto.category } 
         });
@@ -84,7 +84,7 @@ export class NotesService {
         }
     }
 
-    async editNoteById(editNoteDto: EditNoteDto, id: string) {
+    async editNoteById(editNoteDto: EditNoteDto, id: string): Promise<string | NestError> {
         const editNote: Note = await this.noteModel.findOne({ where: { id } });
         
         if (await editNote !== null) {

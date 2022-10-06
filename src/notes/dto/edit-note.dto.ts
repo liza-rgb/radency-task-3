@@ -1,20 +1,20 @@
-import { IsIn, IsNotEmpty, IsString, IsBoolean } from "class-validator";
+import { IsIn, IsNotEmpty, IsString, IsBoolean, IsOptional } from "class-validator";
 
 export class EditNoteDto {
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     readonly name: string;
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     readonly content: string;
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     @IsIn(['Task', 'Random Thought', 'Idea', 'Quote'])
     readonly category: string;
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsBoolean()
     readonly isArchived: boolean;
 }
